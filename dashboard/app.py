@@ -35,6 +35,7 @@ app.layout = html.Div(
     ],
 )
 
+# comment fot git-related purposes
 # callback modifing scatters and bar charts
 @app.callback(
     Output("species-scatter-col", "children"),
