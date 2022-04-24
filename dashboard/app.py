@@ -1,6 +1,8 @@
-from typing import List, Tuple
+from functools import reduce
+from typing import Any, Dict, List, Tuple
 
 import dash_bootstrap_components as dbc
+import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
 from dash import Dash, Input, Output, dash_table, dcc, html
@@ -9,7 +11,7 @@ from components.filtering import penguins_mass_slider, penguins_sex_checklist
 from components.static import navbar
 
 # import from our packages with components and graphs
-from data.external import filter_penguins, penguins_df
+from data.external import filter_penguins, filter_penguins_by_selection, penguins_df
 from graphs.templates import bar_chart_sex, island_scatter, species_scatter
 
 # creating appliaction
@@ -24,9 +26,21 @@ app.layout = html.Div(
             [
                 dbc.Row(
                     [
-                        dbc.Col(html.Span("Select penguins body mass:"), width=2),
+                        dbc.Col(
+                            html.Span(
+                                "Penguins body mass:",
+                                style={"font-weight": "bold"},
+                            ),
+                            width=2,
+                        ),
                         dbc.Col(penguins_mass_slider(), width=6),
-                        dbc.Col(html.Span("Select penguins sex:"), width=2),
+                        dbc.Col(
+                            html.Span(
+                                "Select penguins sex:",
+                                style={"font-weight": "bold"},
+                            ),
+                            width=2,
+                        ),
                         dbc.Col(penguins_sex_checklist(), width=2),
                     ]
                 ),
@@ -83,18 +97,38 @@ def adjust_main_graphs(
     )
 
 
+# callback modifing count on top of the website and the datarange of the table
+# also add crossfiltering from scatter plots
 @app.callback(
     Output("penguins-number-field", "children"),
     Output("penguins-table", "data"),
     Input("penguins-mass-slider", "value"),
     Input("penguins-sex-checklist", "value"),
+    Input("species-scatter", "selectedData"),
+    Input("island-scatter", "selectedData"),
 )
-def adjust_textual_data(mass_range: List[float], sexes_list: List[str]) -> str:
+def adjust_textual_data(
+    mass_range: List[float],
+    sexes_list: List[str],
+    species_selection,
+    island_selection,
+) -> Tuple[str, Dict[str, Any]]:
     df = penguins_df()
     df = filter_penguins(df, mass_range, sexes_list)
+    df = filter_penguins_by_selection(df, species_selection, island_selection)
     penguins_count = len(df)
     penguins_count_text = f"Number of penguins: {penguins_count}"
     return penguins_count_text, df.to_dict("records")
+
+
+@app.callback(
+    Output("penguins-mass-slider", "value"),
+    Output("penguins-sex-checklist", "value"),
+    Input("preset-button", "n_clicks"),
+    prevent_initial_call=True,
+)
+def load_preset(n_clicks):
+    return [4000, 5500], ["Male", "Female", "Unknown"]
 
 
 # safety - only when running `python path-to-this-file.py` this code will run

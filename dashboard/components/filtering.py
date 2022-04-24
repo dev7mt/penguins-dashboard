@@ -1,3 +1,6 @@
+from functools import reduce
+
+import numpy as np
 from dash import dcc
 from data.external import penguins_df
 

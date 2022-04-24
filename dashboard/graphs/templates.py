@@ -18,7 +18,7 @@ def species_scatter(
             y="flipper_length_mm",
             color="species",
             hover_data=["species", "island", "body_mass_g"],
-            title="Penguins!",
+            title="Scatter by species",
         ),
     )
 
@@ -37,7 +37,7 @@ def island_scatter(
             y="flipper_length_mm",
             color="island",
             hover_data=["species", "island", "body_mass_g"],
-            title="Penguins!",
+            title="Scatter by islands",
         ),
     )
 
@@ -54,6 +54,6 @@ def bar_chart_sex(
             df.groupby("sex")["body_mass_g"].mean().reset_index(),
             x="sex",
             y="body_mass_g",
-            title="Penguins!",
+            title="Body mass by sex",
         ),
     )
