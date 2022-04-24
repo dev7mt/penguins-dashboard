@@ -2,13 +2,14 @@ from typing import List
 
 import plotly.express as px
 from dash import dcc
-from data.external import penguins_df
+from data.external import filter_penguins, penguins_df
 
 
-def species_scatter(mass_range: List[float] = None) -> dcc.Graph:
+def species_scatter(
+    mass_range: List[float] = None, sexes_list: List[str] = None
+) -> dcc.Graph:
     df = penguins_df()
-    if mass_range is not None:
-        df = df.loc[df.body_mass_g.between(*mass_range)]
+    df = filter_penguins(df, mass_range, sexes_list)
     return dcc.Graph(
         id="species-scatter",
         figure=px.scatter(
@@ -22,10 +23,12 @@ def species_scatter(mass_range: List[float] = None) -> dcc.Graph:
     )
 
 
-def island_scatter(mass_range: List[float] = None) -> dcc.Graph:
+def island_scatter(
+    mass_range: List[float] = None, sexes_list: List[str] = None
+) -> dcc.Graph:
     df = penguins_df()
-    if mass_range is not None:
-        df = df.loc[df.body_mass_g.between(*mass_range)]
+    df = filter_penguins(df, mass_range, sexes_list)
+
     return dcc.Graph(
         id="island-scatter",
         figure=px.scatter(
@@ -39,10 +42,12 @@ def island_scatter(mass_range: List[float] = None) -> dcc.Graph:
     )
 
 
-def bar_chart_sex(mass_range: List[float] = None) -> dcc.Graph:
+def bar_chart_sex(
+    mass_range: List[float] = None, sexes_list: List[str] = None
+) -> dcc.Graph:
     df = penguins_df()
-    if mass_range is not None:
-        df = df.loc[df.body_mass_g.between(*mass_range)]
+    df = filter_penguins(df, mass_range, sexes_list)
+
     return dcc.Graph(
         id="bar-chart-sex",
         figure=px.bar(

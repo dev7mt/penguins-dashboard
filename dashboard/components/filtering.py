@@ -14,10 +14,17 @@ def penguins_mass_slider() -> dcc.RangeSlider:
     body_mass_steps = range(min_, max_, 200)
 
     # dictionary comprehension
+    # {a: a * 10 for a in [1, 2, 3]}
     # {new_key: new_value for key, val in another_dict.items()}
     # {v: modified_v for v in list}
-    marks = {step: f"{step}g" for step in body_mass_steps}
+    marks = {}
+    for i, step in enumerate(body_mass_steps):
+        if i % 2 == 0:
+            marks[step] = f"{step}g"
+        else:
+            marks[step] = ""
 
+    # marks = {0: "poczatek", 100: "koniec"}
     # add true min and max to marks
     marks[min_] = f"{min_}g"
     marks[max_] = f"{max_}g"
@@ -32,3 +39,13 @@ def penguins_mass_slider() -> dcc.RangeSlider:
         id="penguins-mass-slider",
     )
     return slider
+
+
+def penguins_sex_checklist() -> dcc.Checklist:
+    checklist = dcc.Checklist(
+        options=["Male", "Female", "Unknown"],
+        value=["Male", "Female"],
+        inline=True,
+        id="penguins-sex-checklist",
+    )
+    return checklist

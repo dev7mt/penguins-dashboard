@@ -13,6 +13,9 @@ navbar = dbc.Navbar(
                 align="center",
                 className="g-0",
             ),
+            html.Span(
+                children=[], id="penguins-number-field", style={"color": "white"}
+            ),
         ]
     ),
     color="primary",
